@@ -1,0 +1,32 @@
+START
+
+1. Prompt the user to enter the elements of the first array and store it as `array1`.
+2. Prompt the user to enter the elements of the second array and store it as `array2`.
+3. Concatenate `array1` and `array2` to form `arr`.
+
+4. Initialize a loop to request the user to input the k-th element index (1-based index).
+   - If the input is invalid (k > length of arr or k <= 0), prompt the user to enter a valid value.
+   - Exit the loop once a valid k-th element is provided.
+
+5. Adjust the 1-based k-th index to a 0-based index (k = k_input - 1).
+
+6. Define the function `insertion(array)`:
+   - Iterate through each element in the array starting from the second element (index 1).
+   - For each element, compare it with the previous elements and shift larger elements one position to the right.
+   - Place the current element in its correct sorted position.
+   - Return the sorted array.
+
+7. Define the function `find_k(array, key)`:
+   - Sort the input array using `insertion(array)`.
+   - Output the sorted array.
+   - Output the element at the k-th index from the sorted array (adjusted for 0-based index).
+
+8. Call `find_k(arr, k)` to find and print the result.
+
+END
+
+####################################################
+
+Time complexity
+
+O((n + m)^2)
