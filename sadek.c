@@ -22,22 +22,18 @@ int main() {
 
     printf("Welcome to Logistics and Supply Chain System\n");
 
-    // Check current user (mock check; replace with actual logic if needed)
-    char *current_user = getenv("USER");
-    if (current_user && strcmp(current_user, "sadek") == 0) {
-        printf("You are currently logged in as 'sadek'\n");
-    } else {
-        printf("You are not 'sadek'. Certain features may be restricted.\n");
-    }
 
     while (1) {
+        if (current_user && strcmp(current_user, "sadek") == 0) {
+        printf("You are currently logged in as 'sadek'\n");
         printf("\nChoose a task:\n");
         printf("1. List files/directories\n");
         printf("2. Change permissions of files/directories\n");
         printf("3. Make/delete files/directories\n");
         printf("4. Create symbolic link files\n");
         printf("5. Copy files/directories\n");
-        printf("6. Move files/directories\n");
+    } else {
+        printf("You are not 'sadek'. Certain features may be restricted.\n");
         printf("7. Add notes to a file\n");
         printf("8. Set alias for a command\n");
         printf("9. View file content\n");
@@ -45,7 +41,8 @@ int main() {
         printf("0. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
-
+    }
+    
         switch (choice) {
             case 1:
                 printf("Enter path to list files/directories: ");
