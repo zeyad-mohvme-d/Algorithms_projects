@@ -22,13 +22,18 @@ int main() {
 
     printf("Welcome to Logistics and Supply Chain System\n");
 
-    // Define current_user using getenv
+    // Retrieve current_user
     char *current_user = getenv("USER");
+    if (!current_user) {
+        printf("Error: Could not retrieve current user. Defaulting to restricted mode.\n");
+        current_user = "restricted";
+    }
 
     while (1) {
-        if (current_user && strcmp(current_user, "sadek") == 0) {
+        printf("\n========================\n");
+        if (strcmp(current_user, "sadek") == 0) {
             printf("You are currently logged in as 'sadek'\n");
-            printf("\nChoose a task:\n");
+            printf("Choose a task:\n");
             printf("1. List files/directories\n");
             printf("2. Change permissions of files/directories\n");
             printf("3. Make/delete files/directories\n");
@@ -41,8 +46,8 @@ int main() {
             printf("10. Find files/directories\n");
             printf("0. Exit\n");
         } else {
-            printf("You are not 'sadek'. Certain features may be restricted.\n");
-            printf("\nChoose a task:\n");
+            printf("You are not 'sadek'. Certain features are restricted.\n");
+            printf("Choose a task:\n");
             printf("1. List files/directories\n");
             printf("2. Change permissions of files/directories\n");
             printf("3. Make/delete files/directories\n");
@@ -51,6 +56,8 @@ int main() {
             printf("6. Move files/directories\n");
             printf("0. Exit\n");
         }
+        printf("========================\n");
+
         printf("Enter your choice: ");
         if (scanf("%d", &choice) != 1) {
             printf("Invalid input. Please enter a number.\n");
@@ -79,6 +86,7 @@ int main() {
                 printf("Enter 1 to create or 0 to delete: ");
                 if (scanf("%d", &create) != 1) {
                     printf("Invalid input. Please enter 1 or 0.\n");
+                    while (getchar() != '\n'); // Clear input buffer
                     break;
                 }
                 createDeleteFiles(path, create);
@@ -109,7 +117,7 @@ int main() {
                 break;
 
             case 7:
-                if (!current_user || strcmp(current_user, "sadek") != 0) {
+                if (strcmp(current_user, "sadek") != 0) {
                     printf("This feature is restricted.\n");
                     break;
                 }
@@ -128,7 +136,7 @@ int main() {
                 break;
 
             case 8:
-                if (!current_user || strcmp(current_user, "sadek") != 0) {
+                if (strcmp(current_user, "sadek") != 0) {
                     printf("This feature is restricted.\n");
                     break;
                 }
@@ -142,7 +150,7 @@ int main() {
                 break;
 
             case 9:
-                if (!current_user || strcmp(current_user, "sadek") != 0) {
+                if (strcmp(current_user, "sadek") != 0) {
                     printf("This feature is restricted.\n");
                     break;
                 }
@@ -154,7 +162,7 @@ int main() {
                 break;
 
             case 10:
-                if (!current_user || strcmp(current_user, "sadek") != 0) {
+                if (strcmp(current_user, "sadek") != 0) {
                     printf("This feature is restricted.\n");
                     break;
                 }
