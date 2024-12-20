@@ -19,6 +19,10 @@ int main() {
     char path[256], permissions[10], target[256], link[256];
     char source[256], destination[256], note[256], aliasName[50], command[256], pattern[256];
     int append, create;
+    current_user = system("pwd");
+    if (current_user == "/home/sadek"){
+        printf("You are currently logged in as sadek\n");
+    }
 
     printf("Welcome to Logistics and Supply Chain System\n");
     while (1) {
