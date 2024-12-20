@@ -22,93 +22,123 @@ int main() {
 
     printf("Welcome to Logistics and Supply Chain System\n");
 
-    // Check current user
-    char *current_user = getenv("USER");
-    int restricted_user = !(current_user && strcmp(current_user, "sadek") == 0);
-
-    if (!restricted_user) {
-        printf("You are currently logged in as 'sadek'\n");
-    } else {
-        printf("You are not 'sadek'. Certain features are restricted.\n");
+    char pwd[256];
+    FILE *fp = popen("pwd", "r");
+    if (fp == NULL) {
+        printf("Failed to get current directory.\n");
+        return 1;
     }
+    fgets(pwd, sizeof(pwd), fp);
+    pclose(fp);
+    pwd[strcspn(pwd, "\n")] = 0; // Remove newline
 
-    while (1) {
-        printf("\nChoose a task:\n");
+    if (strcmp(pwd, "/home/sadek") == 0) {
+        printf("\nAdmin Dashboard\n");
         printf("1. List files/directories\n");
         printf("2. Change permissions of files/directories\n");
         printf("3. Make/delete files/directories\n");
         printf("4. Create symbolic link files\n");
         printf("5. Copy files/directories\n");
         printf("6. Move files/directories\n");
-        if (!restricted_user) {
-            printf("7. Add notes to a file\n");
-            printf("8. Set alias for a command\n");
-            printf("9. View file content\n");
-            printf("10. Find files/directories\n");
-        }
-        printf("0. Exit\n");
+        printf("7. Add notes to a file\n");
+        printf("8. Set alias for a command\n");
+        printf("9. View file content\n");
+        printf("10. Find files/directories\n");
+        printf("0. Logout\n");
         printf("Enter your choice: ");
-        if (scanf("%d", &choice) != 1) {
-            printf("Invalid input. Please enter a number.\n");
-            while (getchar() != '\n'); // Clear invalid input
-            continue;
-        }
+        scanf("%d", &choice);
+    } else if (strcmp(pwd, "/home/warehouse") == 0) {
+        printf("\nWarehouse Staff Dashboard\n");
+        printf("1. List files/directories\n");
+        printf("2. Make/delete files/directories\n");
+        printf("3. Move files/directories\n");
+        printf("4. View file content\n");
+        printf("0. Logout\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+    } else if (strcmp(pwd, "/home/customer") == 0) {
+        printf("\nCustomer Dashboard\n");
+        printf("1. List files/directories\n");
+        printf("2. Copy files/directories\n");
+        printf("3. View file content\n");
+        printf("4. Add notes to a file\n");
+        printf("0. Logout\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+    } else {
+        printf("Unauthorized access. Exiting...\n");
+        return 1;
+    }
 
-        switch (choice) {
-            case 1:
-                printf("Enter path to list files/directories: ");
-                scanf("%s", path);
-                listFiles(path);
-                break;
+    switch (choice) {
+        case 1:
+            printf("Enter path to list files/directories: ");
+            scanf("%s", path);
+            listFiles(path);
+            break;
 
-            case 2:
+        case 2:
+            if (strcmp(pwd, "/home/warehouse") == 0 || strcmp(pwd, "/home/sadek") == 0) {
                 printf("Enter path to file/directory: ");
                 scanf("%s", path);
                 printf("Enter new permissions (e.g., 755): ");
                 scanf("%s", permissions);
                 changePermissions(path, permissions);
-                break;
+            } else {
+                printf("Access denied for this action.\n");
+            }
+            break;
 
-            case 3:
+        case 3:
+            if (strcmp(pwd, "/home/warehouse") == 0 || strcmp(pwd, "/home/sadek") == 0) {
                 printf("Enter path to file/directory: ");
                 scanf("%s", path);
                 printf("Enter 1 to create or 0 to delete: ");
-                if (scanf("%d", &create) != 1) {
-                    printf("Invalid input. Please enter 1 or 0.\n");
-                    break;
-                }
+                scanf("%d", &create);
                 createDeleteFiles(path, create);
-                break;
+            } else {
+                printf("Access denied for this action.\n");
+            }
+            break;
 
-            case 4:
+        case 4:
+            if (strcmp(pwd, "/home/sadek") == 0) {
                 printf("Enter target file for symbolic link: ");
                 scanf("%s", target);
                 printf("Enter symbolic link name: ");
                 scanf("%s", link);
                 createSymbolicLink(target, link);
-                break;
+            } else {
+                printf("Access denied for this action.\n");
+            }
+            break;
 
-            case 5:
+        case 5:
+            if (strcmp(pwd, "/home/sadek") == 0 || strcmp(pwd, "/home/customer") == 0) {
                 printf("Enter source file/directory: ");
                 scanf("%s", source);
                 printf("Enter destination: ");
                 scanf("%s", destination);
                 copyFiles(source, destination);
-                break;
+            } else {
+                printf("Access denied for this action.\n");
+            }
+            break;
 
-            case 6:
+        case 6:
+            if (strcmp(pwd, "/home/sadek") == 0 || strcmp(pwd, "/home/warehouse") == 0) {
                 printf("Enter source file/directory: ");
                 scanf("%s", source);
                 printf("Enter destination: ");
                 scanf("%s", destination);
                 moveFiles(source, destination);
-                break;
+            } else {
+                printf("Access denied for this action.\n");
+            }
+            break;
 
-            case 7:
-                if (restricted_user) {
-                    printf("This feature is restricted.\n");
-                    break;
-                }
+        case 7:
+            if (strcmp(pwd, "/home/sadek") == 0 || strcmp(pwd, "/home/customer") == 0) {
                 printf("Enter file path to add notes: ");
                 scanf("%s", path);
                 printf("Enter note: ");
@@ -116,18 +146,15 @@ int main() {
                 fgets(note, sizeof(note), stdin);
                 note[strcspn(note, "\n")] = 0; // Remove newline
                 printf("Enter 1 to append or 0 to overwrite: ");
-                if (scanf("%d", &append) != 1) {
-                    printf("Invalid input. Please enter 1 or 0.\n");
-                    break;
-                }
+                scanf("%d", &append);
                 addNotesToFile(path, note, append);
-                break;
+            } else {
+                printf("Access denied for this action.\n");
+            }
+            break;
 
-            case 8:
-                if (restricted_user) {
-                    printf("This feature is restricted.\n");
-                    break;
-                }
+        case 8:
+            if (strcmp(pwd, "/home/sadek") == 0) {
                 printf("Enter alias name: ");
                 scanf("%s", aliasName);
                 printf("Enter command: ");
@@ -135,41 +162,118 @@ int main() {
                 fgets(command, sizeof(command), stdin);
                 command[strcspn(command, "\n")] = 0; // Remove newline
                 setAlias(aliasName, command);
-                break;
+            } else {
+                printf("Access denied for this action.\n");
+            }
+            break;
 
-            case 9:
-                if (restricted_user) {
-                    printf("This feature is restricted.\n");
-                    break;
-                }
-                printf("Enter file path to view content: ");
-                scanf("%s", path);
-                printf("Enter view mode (cat, head, tail): ");
-                scanf("%s", permissions); // Reusing permissions variable
-                viewFileContent(path, permissions);
-                break;
+        case 9:
+            printf("Enter file path to view content: ");
+            scanf("%s", path);
+            printf("Enter view mode (cat, head, tail): ");
+            scanf("%s", permissions); // Reusing permissions variable
+            viewFileContent(path, permissions);
+            break;
 
-            case 10:
-                if (restricted_user) {
-                    printf("This feature is restricted.\n");
-                    break;
-                }
+        case 10:
+            if (strcmp(pwd, "/home/sadek") == 0) {
                 printf("Enter directory to search: ");
                 scanf("%s", path);
                 printf("Enter search pattern: ");
                 scanf("%s", pattern);
                 findFiles(path, pattern);
-                break;
+            } else {
+                printf("Access denied for this action.\n");
+            }
+            break;
 
-            case 0:
-                printf("Exiting...\n");
-                exit(0);
+        case 0:
+            printf("Logging out...\n");
+            return 0;
 
-            default:
-                printf("Invalid choice. Try again.\n");
-        }
+        default:
+            printf("Invalid choice. Try again.\n");
     }
+
     return 0;
 }
 
-// Implementations remain unchanged
+// Function implementations
+void listFiles(const char *path) {
+    char command[512] = "ls -l ";
+    strcat(command, path);
+    system(command);
+}
+
+void changePermissions(const char *path, const char *permissions) {
+    char command[512] = "chmod ";
+    strcat(command, permissions);
+    strcat(command, " ");
+    strcat(command, path);
+    system(command);
+}
+
+void createDeleteFiles(const char *path, int create) {
+    char command[512];
+    if (create) {
+        strcpy(command, "mkdir -p ");
+        strcat(command, path);
+    } else {
+        strcpy(command, "rm -rf ");
+        strcat(command, path);
+    }
+    system(command);
+}
+
+void createSymbolicLink(const char *target, const char *link) {
+    char command[512] = "ln -s ";
+    strcat(command, target);
+    strcat(command, " ");
+    strcat(command, link);
+    system(command);
+}
+
+void copyFiles(const char *source, const char *destination) {
+    char command[512] = "cp -r ";
+    strcat(command, source);
+    strcat(command, " ");
+    strcat(command, destination);
+    system(command);
+}
+
+void moveFiles(const char *source, const char *destination) {
+    char command[512] = "mv ";
+    strcat(command, source);
+    strcat(command, " ");
+    strcat(command, destination);
+    system(command);
+}
+
+void addNotesToFile(const char *path, const char *note, int append) {
+    char command[512] = "echo \"";
+    strcat(command, note);
+    strcat(command, append ? "\" >> " : "\" > ");
+    strcat(command, path);
+    system(command);
+}
+
+void setAlias(const char *aliasName, const char *command) {
+    printf("alias %s='%s'\n", aliasName, command);
+}
+
+void viewFileContent(const char *path, const char *mode) {
+    char command[512];
+    strcpy(command, mode);
+    strcat(command, " ");
+    strcat(command, path);
+    system(command);
+}
+
+void findFiles(const char *directory, const char *pattern) {
+    char command[512] = "find ";
+    strcat(command, directory);
+    strcat(command, " -name \"");
+    strcat(command, pattern);
+    strcat(command, "\"");
+    system(command);
+}
